@@ -90,7 +90,9 @@ const Assessments = () => {
                 </div>
 
                 <div className='border border-subtle p-2 rounded-sm'>
-                  <div className='font-mono text-lg font-bold text-ink'>-</div>
+                  <div className='font-mono text-lg font-bold text-ink'>
+                    {a.factorCount || 0}
+                  </div>
                   <div className='text-[10px] uppercase tracking-widest text-muted'>
                     Factors
                   </div>

@@ -144,6 +144,9 @@ const getAssessments = asyncHandler(async (req, res) => {
 
   // Include a lightweight question count per assessment for display purposes
   const withCounts = assessments.map((a) => {
+    const factorCount = a.categories.reduce((catSum, cat) => {
+      return catSum + (cat.factors?.length || 0);
+    }, 0);
     const questionCount = a.categories.reduce((catSum, cat) => {
       return (
         catSum +
@@ -158,6 +161,7 @@ const getAssessments = asyncHandler(async (req, res) => {
       status: a.status,
       createdAt: a.createdAt,
       categoryCount,
+      factorCount,
       questionCount,
     };
   });
