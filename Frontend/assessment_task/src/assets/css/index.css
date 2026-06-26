@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  background: #f3f1ec;
+  color: #0d0c0a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #e54d2e;
+  color: #fff;
+}
+
+/* Layered grain background */
+.bg-grain {
+  background-color: #f3f1ec;
+  background-image: radial-gradient(rgba(13, 12, 10, 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(13, 12, 10, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 12px 12px;
+  background-position: 0 0, 6px 6px;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-accent text-white font-head font-bold px-6 py-3 rounded-sm transition-colors hover:bg-accentHover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-paper disabled:opacity-50 disabled:cursor-not-allowed;
+}
+.btn-secondary {
+  @apply bg-white border-2 border-ink text-ink font-head font-bold px-6 py-3 rounded-sm transition-all hover:bg-ink hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-paper;
+}
+.btn-ghost {
+  @apply text-muted hover:text-ink hover:bg-subtle/50 rounded-sm px-4 py-2 transition-colors;
+}
+.btn-danger {
+  @apply text-danger hover:bg-danger/10 rounded-sm px-3 py-2 transition-colors;
+}
+
+/* Inputs */
+.input-base {
+  @apply bg-white border-2 border-subtle text-ink placeholder-[#8A867D] focus:border-ink focus:outline-none focus:ring-0 rounded-sm p-3 w-full font-body transition-colors;
+}
+
+/* Labels */
+.label-tiny {
+  @apply text-xs font-bold uppercase tracking-[0.1em] text-muted;
+}
+
+/* Cards */
+.card-std {
+  @apply bg-surface border border-subtle rounded-sm shadow-soft;
+}
+.card-brut {
+  @apply bg-surface border-2 border-ink rounded-sm shadow-brut;
+}
+
+/* Section heading underline mark */
+.h-mark::before {
+  content: \"\";
+  display: inline-block;
+  width: 28px;
+  height: 4px;
+  background: #e54d2e;
+  margin-right: 12px;
+  vertical-align: middle;
+}
