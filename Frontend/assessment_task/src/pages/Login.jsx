@@ -111,7 +111,7 @@ const Login = () => {
                     email: e.target.value,
                   })
                 }
-                placeholder='you@company.com'
+                placeholder='Enter Email'
                 data-testid='login-email-input'
               />
             </div>
@@ -130,7 +130,7 @@ const Login = () => {
                       password: e.target.value,
                     })
                   }
-                  placeholder='••••••••'
+                  placeholder='Enter Password'
                   data-testid='login-password-input'
                 />
 

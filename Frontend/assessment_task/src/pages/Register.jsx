@@ -115,7 +115,7 @@ const Register = () => {
                     name: e.target.value,
                   })
                 }
-                placeholder='Jane Architect'
+                placeholder='Enter Full name'
                 data-testid='register-name-input'
               />
             </div>
@@ -133,7 +133,7 @@ const Register = () => {
                     email: e.target.value,
                   })
                 }
-                placeholder='you@company.com'
+                placeholder='Enter Email'
                 data-testid='register-email-input'
               />
             </div>
