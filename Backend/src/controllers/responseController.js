@@ -113,7 +113,8 @@ const submitResponse = asyncHandler(async (req, res) => {
 const getResponses = asyncHandler(async (req, res) => {
   const responses = await Response.find({ submittedBy: req.user._id })
     .sort({ createdAt: -1 })
-    .populate('assessment', 'title');
+    .populate('assessment', 'title')
+    .populate('submittedBy', 'name email');
   res.status(200).json({ responses });
 });
 

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { BarChart3, ChevronDown, FileText } from 'lucide-react';
 import { useFetchQuery } from '../components/hooks/useFetchQuery';
+import Loader from '../components/loader/Loader';
 
 const fmt = (v) => {
   if (v === undefined || v === null || v === '') return '—';
@@ -10,12 +11,13 @@ const fmt = (v) => {
 };
 
 const Reports = () => {
-  const { data: assessmentsData } = useFetchQuery({
-    url: '/assessments',
-    queryKey: ['assessments'],
-  });
+  const { data: assessmentsData, isLoading: loadingAssessments } =
+    useFetchQuery({
+      url: '/assessments',
+      queryKey: ['assessments'],
+    });
 
-  const { data: responsesData } = useFetchQuery({
+  const { data: responsesData, isLoading: loadingResponses } = useFetchQuery({
     url: '/responses',
     queryKey: ['responses'],
   });
@@ -61,6 +63,12 @@ const Reports = () => {
     // Fallback: Use the flat answers count from your Mongoose document structure
     return subs[0]?.answers?.length || 0;
   }, [selected, subs]);
+
+  const isLoading = loadingAssessments || loadingResponses;
+
+  if (isLoading) {
+    return <Loader fullScreen tip='Loading reports...' />;
+  }
 
   return (
     <div className='space-y-10'>

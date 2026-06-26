@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Plus, ClipboardList, Rocket, BarChart3 } from 'lucide-react';
 import { useFetchQuery } from '../components/hooks/useFetchQuery';
+import Loader from '../components/loader/Loader';
 
 const Assessments = () => {
   const { data, isLoading, error } = useFetchQuery({
@@ -10,9 +11,9 @@ const Assessments = () => {
 
   const assessments = data?.assessments || [];
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (isLoading) {
+    return <Loader fullScreen tip='Loading assessments...' />;
+  }
 
   if (error) {
     return <div>Error: {error.message}</div>;

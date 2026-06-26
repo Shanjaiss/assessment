@@ -4,6 +4,7 @@ import { Rocket, ChevronRight, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useFetchQuery } from '../components/hooks/useFetchQuery';
 import { useCreateQuery } from '../components/hooks/useCreateQuery';
+import Loader from '../components/loader/Loader';
 
 // List view + Take view (when :id is present)
 const LaunchPad = () => {
@@ -15,7 +16,7 @@ const LaunchPad = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader fullScreen tip='Loading assessments...' />;
   }
 
   if (error) {
@@ -110,7 +111,7 @@ const TakeAssessment = ({ assessment }) => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const { mutate: submitResponse, isLoading } = useCreateQuery({
+  const { mutate: submitResponse } = useCreateQuery({
     url: '/responses',
     queryKey: ['responses'],
     successMessage: 'Response submitted successfully',

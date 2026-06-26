@@ -512,7 +512,7 @@ const Builder = () => {
   const existingNames = categories.map((c) => c.name.trim().toLowerCase());
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader fullScreen tip='Loading assessments...' />;
   }
   return (
     <div className='space-y-10'>
