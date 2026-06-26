@@ -1,17 +1,7 @@
 import React from 'react';
 import { Spin } from 'antd';
 
-interface SpinnerProps {
-  fullScreen?: boolean;
-  size?: 'small' | 'default' | 'large';
-  tip?: string;
-}
-
-const Loader: React.FC<SpinnerProps> = ({
-  fullScreen = false,
-  size = 'large',
-  tip = 'Loading...',
-}) => {
+const Loader = ({ fullScreen = false, size = 'large', tip = 'Loading...' }) => {
   if (fullScreen) {
     return (
       <div

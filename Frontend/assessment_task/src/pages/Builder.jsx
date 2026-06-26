@@ -16,6 +16,7 @@ import { uid } from '../lib/storage';
 import { toast } from 'sonner';
 import { useCreateQuery } from '../components/hooks/useCreateQuery';
 import { useFetchQuery } from '../components/hooks/useFetchQuery';
+import Loader from '../components/loader/Loader';
 
 const QUESTION_TYPES = [
   { value: 'multiple_choice', label: 'Multiple Choice' },
@@ -400,7 +401,7 @@ const Builder = () => {
     successMessage: 'Assessment saved successfully',
   });
 
-  const { data: categoriesData } = useFetchQuery({
+  const { data: categoriesData, isLoading } = useFetchQuery({
     url: '/categories',
     queryKey: ['categories'],
   });
@@ -510,6 +511,9 @@ const Builder = () => {
 
   const existingNames = categories.map((c) => c.name.trim().toLowerCase());
 
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div className='space-y-10'>
       <div>

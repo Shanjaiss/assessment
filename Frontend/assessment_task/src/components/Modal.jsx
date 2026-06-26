@@ -13,7 +13,7 @@ const Modal = ({ open, onClose, title, children, testId = 'modal' }) => {
 
   return (
     <div
-      className='fixed inset-0 bg-ink/40 backdrop-blur-sm z-50 flex items-center justify-center p-4'
+      className='fixed inset-0 bg-ink/40 backdrop-blur-sm z-60 flex items-center justify-center p-4'
       onClick={onClose}
       data-testid={`${testId}-overlay`}
     >
