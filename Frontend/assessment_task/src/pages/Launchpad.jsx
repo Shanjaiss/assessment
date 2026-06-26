@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { useData } from '../context/DataContext';
 import { Rocket, ChevronRight, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useFetchQuery } from '../components/hooks/useFetchQuery';

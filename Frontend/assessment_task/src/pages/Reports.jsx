@@ -30,41 +30,37 @@ const Reports = () => {
   const [selectedId, setSelectedId] = useState(preselect || '');
   const [expanded, setExpanded] = useState({});
 
-  const selected = assessments.find((a) => a._id === selectedId);
+  // Fix: Safe string comparison for MongoDB ObjectIds
+  const selected = assessments.find(
+    (a) => String(a._id) === String(selectedId)
+  );
 
+  // Filter submissions belonging to the selected assessment
   const subs = useMemo(() => {
     if (!selectedId) return [];
-    return responses.filter((r) => r.assessmentId === selectedId);
+    return responses.filter((r) => {
+      const rId = r.assessment?._id || r.assessment;
+      return String(rId) === String(selectedId);
+    });
   }, [selectedId, responses]);
 
-  // ✅ FIXED: safe flattening of questions
-  const allQuestions = useMemo(() => {
-    if (!selected?.categories) return [];
-
-    return selected.categories.flatMap((category, ci) =>
-      category.factors.flatMap((factor, fi) =>
-        factor.questions.map((q, qi) => ({
-          ...q,
-          ref: `${ci + 1}.${fi + 1}.${qi + 1}`,
-          category: category.name,
-          factor: factor.name,
-        }))
-      )
-    );
-  }, [selected]);
-
-  // helper to safely get answer
-  const getAnswer = (response, questionId) => {
-    if (!response?.answers) return null;
-
-    for (const cat of response.answers) {
-      for (const fac of cat.factors || []) {
-        const found = fac.questions?.find((q) => q._id === questionId);
-        if (found) return found.value ?? found.answer ?? found.response;
-      }
+  // Dynamic fix for Question Length: Try counting the structural layout first.
+  // If the backend didn't fetch full structure, pull the count from the flat answers array!
+  const totalQuestionsCount = useMemo(() => {
+    if (selected?.categories && selected.categories.length > 0) {
+      return selected.categories.reduce(
+        (acc, cat) =>
+          acc +
+          (cat.factors?.reduce(
+            (fAcc, fac) => fAcc + (fac.questions?.length || 0),
+            0
+          ) || 0),
+        0
+      );
     }
-    return null;
-  };
+    // Fallback: Use the flat answers count from your Mongoose document structure
+    return subs[0]?.answers?.length || 0;
+  }, [selected, subs]);
 
   return (
     <div className='space-y-10'>
@@ -105,7 +101,7 @@ const Reports = () => {
             >
               <option value=''>Select</option>
               {assessments.map((a) => (
-                <option key={a._id} value={a._id}>
+                <option key={String(a._id)} value={String(a._id)}>
                   {a.title}
                 </option>
               ))}
@@ -115,13 +111,11 @@ const Reports = () => {
           {/* STATS */}
           <div className='grid grid-cols-3 gap-6'>
             <Stat label='Submissions' value={subs.length} />
-            <Stat label='Questions' value={allQuestions.length} />
+            <Stat label='Questions' value={totalQuestionsCount} />
             <Stat
               label='Latest'
               value={
-                subs[0]
-                  ? new Date(subs[0].submittedAt).toLocaleDateString()
-                  : '—'
+                subs[0] ? new Date(subs[0].createdAt).toLocaleDateString() : '—'
               }
               isText
             />
@@ -144,7 +138,7 @@ const Reports = () => {
           ) : (
             /* RESPONSES LIST */
             <div className='space-y-4'>
-              {subs.map((r, ri) => {
+              {subs.map((r) => {
                 const open = expanded[r._id];
 
                 return (
@@ -162,9 +156,12 @@ const Reports = () => {
                       className='w-full flex items-center justify-between p-5 bg-cream border-b-2 border-ink'
                     >
                       <div className='text-left'>
-                        <div className='font-bold'>{r.respondentName}</div>
+                        <div className='font-bold'>
+                          {r.respondentName || 'Anonymous Submitter'}
+                        </div>
+
                         <div className='text-xs text-muted'>
-                          {new Date(r.submittedAt).toLocaleString()}
+                          {new Date(r.createdAt).toLocaleString()}
                         </div>
                       </div>
 
@@ -172,39 +169,26 @@ const Reports = () => {
                     </button>
 
                     {open && (
-                      <div className='p-6 space-y-6'>
-                        {r.answers?.map((cat, ci) => (
-                          <div key={cat._id}>
-                            <h3 className='font-bold mb-3'>{cat.name}</h3>
-
-                            {cat.factors?.map((fac, fi) => (
-                              <div
-                                key={fac._id}
-                                className='border-l-4 border-accent pl-4 mb-4'
-                              >
-                                <div className='font-semibold mb-2'>
-                                  {fac.name}
-                                </div>
-
-                                {fac.questions?.map((q, qi) => (
-                                  <div
-                                    key={q._id}
-                                    className='grid md:grid-cols-2 gap-3 py-2 border-b last:border-0'
-                                  >
-                                    <div>
-                                      <div className='text-xs text-muted'>
-                                        Q {ci + 1}.{fi + 1}.{qi + 1}
-                                      </div>
-                                      <div>{q.text}</div>
-                                    </div>
-
-                                    <div className='font-bold'>
-                                      {fmt(getAnswer(r, q._id))}
-                                    </div>
-                                  </div>
-                                ))}
+                      <div className='p-6 space-y-3'>
+                        {r.answers?.map((ans, index) => (
+                          <div
+                            key={ans.questionId || index}
+                            className='grid md:grid-cols-2 gap-4 py-3 border-b last:border-b-0'
+                          >
+                            <div>
+                              <div className='text-xs text-muted mb-1'>
+                                Q{index + 1} • {ans.categoryName} /{' '}
+                                {ans.factorName}
                               </div>
-                            ))}
+
+                              <div className='font-medium break-words whitespace-pre-wrap text-left max-w-prose'>
+                                {ans.questionText}
+                              </div>
+                            </div>
+
+                            <div className='font-bold text-left md:text-right break-words whitespace-pre-wrap max-w-prose self-center'>
+                              {fmt(ans.answer)}
+                            </div>
                           </div>
                         ))}
                       </div>
