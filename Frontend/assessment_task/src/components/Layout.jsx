@@ -1,5 +1,4 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { LogOut, Hammer, ClipboardList, Rocket, BarChart3 } from 'lucide-react';
 
 const navItems = [
@@ -16,20 +15,17 @@ const navItems = [
     icon: Rocket,
     testId: 'nav-launchpad',
   },
-  {
-    to: '/reports',
-    label: 'Reports',
-    icon: BarChart3,
-    testId: 'nav-reports',
-  },
+  { to: '/reports', label: 'Reports', icon: BarChart3, testId: 'nav-reports' },
 ];
 
 const Layout = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem('user')); // optional safe read
+
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/login');
   };
 
@@ -73,15 +69,11 @@ const Layout = () => {
 
           <div className='flex items-center gap-3'>
             <div className='text-right hidden sm:block'>
-              <div
-                className='font-head font-bold text-sm text-ink leading-tight'
-                data-testid='current-user-name'
-              >
-                {user?.name}
+              <div className='font-head font-bold text-sm text-ink leading-tight'>
+                {user?.name || 'Guest'}
               </div>
-
               <div className='font-mono text-[10px] text-muted'>
-                {user?.email}
+                {user?.email || ''}
               </div>
             </div>
 
