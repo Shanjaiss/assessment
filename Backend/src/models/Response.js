@@ -57,6 +57,11 @@ const ResponseSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    respondentName: {
+      type: String,
+      default: 'Anonymous',
+      trim: true,
+    },
     answers: {
       type: [AnswerSchema],
       default: [],

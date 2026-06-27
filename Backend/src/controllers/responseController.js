@@ -28,7 +28,7 @@ const buildQuestionLookup = (assessment) => {
 // @desc   Submit answers for a given assessment (Launch Pad)
 // @access Private
 const submitResponse = asyncHandler(async (req, res) => {
-  const { assessmentId, answers } = req.body;
+  const { assessmentId, answers, respondentName } = req.body;
 
   if (!assessmentId) {
     return res.status(400).json({ message: 'assessmentId is required' });
@@ -102,6 +102,7 @@ const submitResponse = asyncHandler(async (req, res) => {
     assessmentTitle: assessment.title,
     submittedBy: req.user._id,
     answers: validatedAnswers,
+    respondentName: respondentName?.trim() || 'Anonymous',
   });
 
   res.status(201).json({ response });

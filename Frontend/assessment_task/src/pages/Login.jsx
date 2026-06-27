@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 import { useCreateQuery } from '../components/hooks/useCreateQuery';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
