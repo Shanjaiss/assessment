@@ -518,7 +518,7 @@ const Builder = () => {
   const existingNames = categories.map((c) => c.name.trim().toLowerCase());
 
   if (isLoading) {
-    return <Loader fullScreen='' />;
+    return <Loader fullScreen tip='Loading Builder' />;
   }
   return (
     <div className='space-y-10'>
