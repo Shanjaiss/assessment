@@ -46,9 +46,7 @@ const Register = () => {
         if (data?.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
-
-        toast.success("Account created. Let's build.");
-        navigate('/builder');
+        navigate('/login');
       },
       onError: (error) => {
         setError(error?.response?.data?.message || 'Registration failed');

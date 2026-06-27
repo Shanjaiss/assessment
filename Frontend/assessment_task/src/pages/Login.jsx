@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import { useCreateQuery } from '../components/hooks/useCreateQuery';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
