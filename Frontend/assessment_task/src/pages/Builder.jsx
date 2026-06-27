@@ -12,7 +12,6 @@ import {
   X,
 } from 'lucide-react';
 import Modal from '../components/Modal';
-import { uid } from '../lib/storage';
 import { toast } from 'sonner';
 import { useCreateQuery } from '../components/hooks/useCreateQuery';
 import { useFetchQuery } from '../components/hooks/useFetchQuery';
@@ -28,7 +27,7 @@ const QUESTION_TYPES = [
 ];
 
 const emptyQuestion = (type) => ({
-  id: uid(),
+  id: crypto.randomUUID(),
   type,
   text: '',
   options:
@@ -332,7 +331,7 @@ const LoadCategoriesModal = ({
                       ? 'border-ink bg-cream'
                       : 'border-subtle hover:border-ink'
                   }`}
-                  data-testid={`load-category-${c.id}`}
+                  data-testid={`load-category-${c.id || c._id}`}
                 >
                   <div className='flex items-center gap-3'>
                     <input
@@ -416,7 +415,7 @@ const Builder = () => {
   const addCategory = () => {
     setCategories([
       ...categories,
-      { id: uid(), name: '', expanded: true, factors: [] },
+      { id: crypto.randomUUID(), name: '', expanded: true, factors: [] },
     ]);
   };
 
@@ -432,7 +431,7 @@ const Builder = () => {
     updateCategory(catId, {
       factors: [
         ...cat.factors,
-        { id: uid(), name: '', expanded: true, questions: [] },
+        { id: crypto.randomUUID(), name: '', expanded: true, questions: [] },
       ],
     });
   };
@@ -478,15 +477,22 @@ const Builder = () => {
     if (!title.trim()) return toast.error('Assessment title is required');
     if (categories.length === 0)
       return toast.error('Add at least one category');
+
+    // Notice: We strips the client-side 'id' properties entirely when payloading to the backend
     const cleanCats = categories.map((c) => ({
-      id: c.id,
       name: c.name.trim() || 'Untitled Category',
       factors: c.factors.map((f) => ({
-        id: f.id,
         name: f.name.trim() || 'Untitled Factor',
-        questions: f.questions.filter((q) => q.text.trim()),
+        questions: f.questions
+          .filter((q) => q.text.trim())
+          .map((q) => ({
+            type: q.type,
+            text: q.text.trim(),
+            options: q.options,
+          })),
       })),
     }));
+
     const hasQuestion = cleanCats.some((c) =>
       c.factors.some((f) => f.questions.length > 0)
     );
@@ -512,7 +518,7 @@ const Builder = () => {
   const existingNames = categories.map((c) => c.name.trim().toLowerCase());
 
   if (isLoading) {
-    return <Loader fullScreen tip='Loading assessments...' />;
+    return <Loader fullScreen='' />;
   }
   return (
     <div className='space-y-10'>
@@ -779,18 +785,17 @@ const Builder = () => {
         existingNames={existingNames}
         categoriesLib={categoriesData?.categories || []}
         onSelect={(picks) => {
-          // Clone with new IDs, mark expanded
           const cloned = picks.map((p) => ({
-            id: uid(),
+            id: crypto.randomUUID(),
             name: p.name,
             expanded: true,
             factors: (p.factors || []).map((f) => ({
-              id: uid(),
+              id: crypto.randomUUID(),
               name: f.name,
               expanded: true,
               questions: (f.questions || []).map((q) => ({
                 ...q,
-                id: uid(),
+                id: crypto.randomUUID(),
               })),
             })),
           }));
