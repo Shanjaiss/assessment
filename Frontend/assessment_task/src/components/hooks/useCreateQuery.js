@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import apiClient from './api/apiClient';
 import publicClient from './api/publicClient';
-import { showToast } from '../toast/toast';
+import { toast } from 'sonner';
 
 export const useCreateQuery = ({
   url,
@@ -25,16 +25,12 @@ export const useCreateQuery = ({
       if (queryKey) {
         queryClient.invalidateQueries({ queryKey });
       }
-
-      showToast('success', successMessage);
+      toast.success(successMessage);
       return data;
     },
 
     onError: (error) => {
-      showToast(
-        'error',
-        error?.response?.data?.message || 'Something went wrong'
-      );
+      toast.error(error?.response?.data?.message || 'Something went wrong');
     },
   });
 };

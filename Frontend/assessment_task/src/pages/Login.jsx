@@ -39,8 +39,6 @@ const Login = () => {
       onSuccess: (data) => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-
-        toast.success('Welcome back!');
         navigate('/builder');
       },
 

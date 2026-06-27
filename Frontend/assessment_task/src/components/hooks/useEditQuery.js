@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import apiClient from './api/clients';
-import { showToast } from '../toast/toast';
+import { toast } from 'sonner';
 
 export const useEditQuery = ({
   url,
@@ -19,12 +19,11 @@ export const useEditQuery = ({
       if (queryKey) {
         queryClient.invalidateQueries({ queryKey });
       }
-
-      showToast('success', successMessage);
+      toast.success(successMessage);
     },
 
     onError: (error) => {
-      showToast('error', error?.response?.data?.message || 'Update failed');
+      toast.error(error?.response?.data?.message || 'Update failed');
     },
   });
 };

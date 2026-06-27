@@ -1,7 +1,6 @@
 import { Result, Button } from 'antd';
-import type { FallbackProps } from 'react-error-boundary';
 
-const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+const ErrorFallback = ({ error, resetErrorBoundary }) => {
   return (
     <Result
       status='500'
